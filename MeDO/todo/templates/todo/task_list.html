@@ -1,0 +1,14 @@
+<h1>Welcome to MeDo!</h1>
+
+<table>
+    <tr>
+        <th>Item</th>
+    </tr>
+    {% for item in tasks %}
+    <tr>
+        <td>{{ item.title }}</td>
+    </tr>
+    {% empty %}
+        <h3>No items</h3>
+    {% endfor %}
+</table>
