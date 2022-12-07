@@ -2,6 +2,13 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from .models import Task
 
+from django.contrib.auth.views import LoginView
+
+
+class CustomLoginView(LoginView):
+    template_name = 'todo/login.html'
+    fields = '__all__'
+
 
 class TaskList(ListView):
     model = Task
