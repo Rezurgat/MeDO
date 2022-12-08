@@ -8,6 +8,10 @@ from django.contrib.auth.views import LoginView
 class CustomLoginView(LoginView):
     template_name = 'todo/login.html'
     fields = '__all__'
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+        return reverse_lazy('tasks')
 
 
 class TaskList(ListView):
@@ -24,16 +28,22 @@ class TaskDetail(DetailView):
 class TaskCreate(CreateView):
     model = Task
     fields = '__all__'
-    success_url = reverse_lazy('tasks')
+
+    def get_success_url(self):
+        return reverse_lazy('tasks')
 
 
 class TaskUpdate(UpdateView):
     model = Task
     fields = '__all__'
-    success_url = reverse_lazy('tasks')
+
+    def get_success_url(self):
+        return reverse_lazy('tasks')
 
 
 class TaskDelete(DeleteView):
     model = Task
     context_object_name = 'task'
-    success_url = reverse_lazy('tasks')
+
+    def get_success_url(self):
+        return reverse_lazy('tasks')
