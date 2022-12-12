@@ -33,8 +33,9 @@ class RegisterPageView(FormView):
         return reverse_lazy('tasks')
 
     def get(self, *args, **kwargs):
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             return redirect('tasks')
+        return super().get(*args, **kwargs)
 
 
 class TaskList(LoginRequiredMixin, ListView):
