@@ -8,6 +8,11 @@
 <h1>Welcome to MeDo!</h1>
 <a href="{% url 'task-create' %}">Add Task</a>
 
+<form method="get">
+    <input type="text" name="search-area">
+    <input type="submit" value="Search">
+</form>
+
 <table>
     <tr>
         <th>Item</th>
