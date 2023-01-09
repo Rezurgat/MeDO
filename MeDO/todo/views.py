@@ -1,4 +1,3 @@
-from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
 from .models import Task
@@ -7,6 +6,13 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+
+# Imports for Reordering Feature
+from django.views import View
+from django.shortcuts import redirect
+from django.db import transaction
+
+from .forms import PositionForm
 
 
 class CustomLoginView(LoginView):
@@ -45,18 +51,15 @@ class TaskList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['tasks'] = context['tasks'].filter(user=self.request.user)
+        context['count'] = context['tasks'].filter(task_status=False).count()
 
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
             context['tasks'] = context['tasks'].filter(title__startswith=search_input)
-            context['count'] = context['tasks'].filter(complete=False).count()
 
         context['search_input'] = search_input
 
         return context
-
-
-
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):
@@ -91,3 +94,16 @@ class TaskDelete(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('tasks')
+
+
+class TaskReorder(View):
+    def post(self, request):
+        form = PositionForm(request.POST)
+
+        if form.is_valid():
+            positionList = form.cleaned_data["position"].split(',')
+
+            with transaction.atomic():
+                self.request.user.set_task_order(positionList)
+
+        return redirect(reverse_lazy('tasks'))
