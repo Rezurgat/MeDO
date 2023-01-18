@@ -3,6 +3,7 @@ from .permissions import IsOwnerOrReadOnly
 from django.contrib.auth.models import User
 from rest_framework import permissions, viewsets, filters
 from .serializers import TaskSerializer, UserSerializer
+from rest_framework.exceptions import NotAuthenticated
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -20,6 +21,9 @@ class TaskAuthViewSet(viewsets.ModelViewSet):
                           IsOwnerOrReadOnly,)
 
     def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            raise NotAuthenticated(detail='Sorry.You are not authenticated.')
+
         return Task.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
