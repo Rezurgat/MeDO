@@ -1,7 +1,7 @@
 from todo.models import Task
 from .permissions import IsOwnerOrReadOnly
 from django.contrib.auth.models import User
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, viewsets, filters
 from .serializers import TaskSerializer, UserSerializer
 
 
@@ -12,6 +12,8 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TaskAuthViewSet(viewsets.ModelViewSet):
+    search_fields = ['title']
+    filter_backends = (filters.SearchFilter,)
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
